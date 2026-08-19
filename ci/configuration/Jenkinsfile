@@ -1,0 +1,108 @@
+pipeline {
+
+    agent any
+
+    environment {
+        TERRAFORM_DIR = 'terraform'
+        ANSIBLE_DIR   = 'ansible'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Get Jenkins IP') {
+            steps {
+                script {
+                    env.JENKINS_IP = sh(
+                        script: """
+                            cd ${TERRAFORM_DIR}
+                            terraform output -raw jenkins_public_ip
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Jenkins server IP: ${env.JENKINS_IP}"
+                }
+            }
+        }
+
+        stage('Prepare Ansible Inventory') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'shopnow-jenkins-ssh-key',
+                        keyFileVariable: 'SSH_KEY'
+                    )
+                ]) {
+                    sh '''
+                        cat > ${ANSIBLE_DIR}/inventory/jenkins-ci.ini <<EOF
+[jenkins]
+jenkins-server ansible_host=${JENKINS_IP}
+
+[jenkins:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=${SSH_KEY}
+ansible_python_interpreter=/usr/bin/python3
+EOF
+
+                        chmod 600 ${ANSIBLE_DIR}/inventory/jenkins-ci.ini
+                    '''
+                }
+            }
+        }
+
+        stage('Ansible Syntax Check') {
+            steps {
+                sh '''
+                    ansible-playbook \
+                      -i ${ANSIBLE_DIR}/inventory/jenkins-ci.ini \
+                      --syntax-check \
+                      ${ANSIBLE_DIR}/site.yml
+                '''
+            }
+        }
+
+        stage('Ansible Connectivity Check') {
+            steps {
+                sh '''
+                    ansible \
+                      -i ${ANSIBLE_DIR}/inventory/jenkins-ci.ini \
+                      jenkins \
+                      -m ping
+                '''
+            }
+        }
+
+        stage('Configure Jenkins Server') {
+            steps {
+                sh '''
+                    ansible-playbook \
+                      -i ${ANSIBLE_DIR}/inventory/jenkins-ci.ini \
+                      ${ANSIBLE_DIR}/site.yml
+                '''
+            }
+        }
+    }
+
+    post {
+
+        always {
+            sh '''
+                rm -f ${ANSIBLE_DIR}/inventory/jenkins-ci.ini
+            '''
+        }
+
+        success {
+            echo 'ShopNow Jenkins server configuration completed successfully.'
+        }
+
+        failure {
+            echo 'ShopNow Jenkins server configuration failed.'
+        }
+    }
+}

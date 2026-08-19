@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-admin
+spec:
+  replicas: {{ .Values.admin.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-admin
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-admin
+
+    spec:
+      containers:
+        - name: admin
+          image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
+          imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+
+          ports:
+            - containerPort: 80
+
+          resources:
+            requests:
+              cpu: {{ .Values.admin.resources.requests.cpu }}
+              memory: {{ .Values.admin.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.admin.resources.limits.cpu }}
+              memory: {{ .Values.admin.resources.limits.memory }}
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 20

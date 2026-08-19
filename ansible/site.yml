@@ -1,0 +1,11 @@
+---
+- name: Configure ShopNow Jenkins server
+  hosts: jenkins
+  become: true
+
+  roles:
+    - common
+    - docker
+    - aws_cli
+    - jenkins
+    - kubernetes

@@ -1,0 +1,83 @@
+---
+- name: Install Java
+  apt:
+    name: openjdk-17-jre
+    state: present
+    update_cache: true
+
+- name: Add Jenkins GPG key
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+    mode: "0644"
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]
+      https://pkg.jenkins.io/debian-stable binary/
+    state: present
+    filename: jenkins
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+    update_cache: true
+
+- name: Enable Jenkins service
+  systemd:
+    name: jenkins
+    enabled: true
+    state: started
+
+- name: Download Terraform
+  get_url:
+    url: https://releases.hashicorp.com/terraform/1.15.5/terraform_1.15.5_linux_amd64.zip
+    dest: /tmp/terraform.zip
+    mode: "0644"
+
+- name: Install Terraform
+  unarchive:
+    src: /tmp/terraform.zip
+    dest: /usr/local/bin
+    remote_src: true
+    mode: "0755"
+
+- name: Download kubectl
+  get_url:
+    url: https://dl.k8s.io/release/v1.34.7/bin/linux/amd64/kubectl
+    dest: /usr/local/bin/kubectl
+    mode: "0755"
+
+- name: Download Helm installer
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    dest: /tmp/get-helm-3
+    mode: "0755"
+
+- name: Install Helm
+  command: /tmp/get-helm-3
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Download Trivy repository GPG key
+  get_url:
+    url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+    dest: /usr/share/keyrings/trivy.asc
+    mode: "0644"
+
+- name: Add Trivy repository
+  apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/trivy.asc]
+      https://aquasecurity.github.io/trivy-repo/deb
+      generic main
+    state: present
+    filename: trivy
+
+- name: Install Trivy
+  apt:
+    name: trivy
+    state: present
+    update_cache: true

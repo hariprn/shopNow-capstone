@@ -1,0 +1,52 @@
+---
+- name: Verify AWS CLI installation
+  command: aws --version
+  register: aws_version
+  changed_when: false
+
+- name: Verify kubectl installation
+  command: kubectl version --client
+  register: kubectl_version
+  changed_when: false
+
+- name: Configure kubectl for ShopNow EKS cluster
+  become: false
+  command: >
+    aws eks update-kubeconfig
+    --region {{ aws_region }}
+    --name {{ eks_cluster_name }}
+  environment:
+    HOME: /home/{{ ansible_user }}
+  register: kubeconfig_result
+  changed_when: "'Updated context' in kubeconfig_result.stdout"
+
+- name: Check Kubernetes cluster connectivity
+  become: false
+  command: kubectl get nodes
+  environment:
+    HOME: /home/{{ ansible_user }}
+  register: kubectl_nodes
+  changed_when: false
+
+- name: Display Kubernetes nodes
+  debug:
+    var: kubectl_nodes.stdout_lines
+
+- name: Create ShopNow namespace
+  become: false
+  command: kubectl create namespace {{ shopnow_namespace }}
+  environment:
+    HOME: /home/{{ ansible_user }}
+  register: namespace_result
+  failed_when:
+    - namespace_result.rc != 0
+    - "'AlreadyExists' not in namespace_result.stderr"
+  changed_when: namespace_result.rc == 0
+
+- name: Verify ShopNow namespace
+  become: false
+  command: kubectl get namespace {{ shopnow_namespace }}
+  environment:
+    HOME: /home/{{ ansible_user }}
+  register: namespace_check
+  changed_when: false

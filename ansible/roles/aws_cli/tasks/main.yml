@@ -1,0 +1,23 @@
+---
+- name: Download AWS CLI installer
+  get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp/awscliv2.zip
+    mode: "0644"
+
+- name: Install unzip
+  apt:
+    name: unzip
+    state: present
+    update_cache: true
+
+- name: Extract AWS CLI installer
+  unarchive:
+    src: /tmp/awscliv2.zip
+    dest: /tmp
+    remote_src: true
+
+- name: Install AWS CLI
+  command: /tmp/aws/install
+  args:
+    creates: /usr/local/bin/aws

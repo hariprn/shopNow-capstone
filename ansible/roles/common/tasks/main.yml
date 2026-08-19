@@ -1,0 +1,18 @@
+---
+- name: Update apt package cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install common packages
+  apt:
+    name:
+      - curl
+      - wget
+      - unzip
+      - git
+      - gnupg
+      - ca-certificates
+      - apt-transport-https
+      - software-properties-common
+    state: present

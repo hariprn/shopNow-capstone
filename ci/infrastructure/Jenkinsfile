@@ -1,0 +1,104 @@
+pipeline {
+
+    agent any
+
+    environment {
+        TERRAFORM_DIR = 'terraform'
+        AWS_REGION    = 'ap-south-1'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Format Check') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform fmt -check -recursive
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform init
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform validate
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform plan \
+                          -input=false \
+                          -out=tfplan
+                    '''
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                input message: 'Terraform plan completed. Apply infrastructure changes?',
+                      ok: 'Apply'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform apply \
+                          -input=false \
+                          tfplan
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Outputs') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh '''
+                        terraform output
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'ShopNow infrastructure provisioning completed successfully.'
+        }
+
+        failure {
+            echo 'ShopNow infrastructure pipeline failed.'
+        }
+
+        always {
+            echo 'Infrastructure pipeline execution completed.'
+        }
+    }
+}

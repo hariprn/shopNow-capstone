@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: ShopNow
+  description: ShopNow infrastructure role
+  min_ansible_version: "2.15"
+
+dependencies: []

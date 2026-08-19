@@ -1,0 +1,121 @@
+frontend:
+  replicaCount: 2
+
+  image:
+    repository: shopnow-frontend
+    tag: v1
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+
+admin:
+  replicaCount: 2
+
+  image:
+    repository: shopnow-admin
+    tag: v1
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+
+backend:
+  replicaCount: 2
+
+  image:
+    repository: shopnow-backend
+    tag: v1
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5000
+
+  env:
+    PORT: "5000"
+    MONGODB_URI: "mongodb://mongodb:27017/shopnow"
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+
+mongodb:
+  image:
+    repository: mongo
+    tag: "7.0"
+
+  service:
+    port: 27017
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+ingress:
+  enabled: true
+
+  className: alb
+
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+
+  hosts:
+    - host: ""
+      paths:
+        - path: /admin
+          pathType: Prefix
+          service: admin
+          port: 80
+
+        - path: /api
+          pathType: Prefix
+          service: backend
+          port: 5000
+
+        - path: /
+          pathType: Prefix
+          service: frontend
+          port: 80

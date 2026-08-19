@@ -5,8 +5,6 @@
 *.tfstate.backup
 crash.log
 crash.*.log
-*.tfvars
-!terraform/terraform.tfvars
 
 # Terraform plans
 *.tfplan
@@ -18,6 +16,10 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# Terraform variable files
+*.tfvars
+!terraform/terraform.tfvars
 
 # Node.js
 node_modules/
@@ -40,6 +42,9 @@ ansible/inventory/jenkins-ci.ini
 
 # Jenkins
 jenkins_home/
+
+# Helm generated dependencies
+helm/*/charts/
 
 # OS/editor files
 .DS_Store

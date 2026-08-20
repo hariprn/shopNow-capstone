@@ -25,7 +25,7 @@ RUN npm run build
 ############################
 # Stage 2: Runtime
 ############################
-FROM nginx:1.24-alpine
+FROM nginx:alpine
 
 LABEL org.opencontainers.image.description="ShopNow admin runtime"
 

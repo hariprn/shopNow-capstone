@@ -20,14 +20,14 @@
   register: kubeconfig_result
   changed_when: "'Updated context' in kubeconfig_result.stdout"
 
-- name: Check ShopNow namespace connectivity
+- name: Verify ShopNow namespace
   become: false
-  command: kubectl get pods -n shopnow
+  command: kubectl get namespace {{ shopnow_namespace }}
   environment:
     HOME: /home/{{ ansible_user }}
-  register: kubectl_namespace
+  register: namespace_check
   changed_when: false
 
 - name: Display ShopNow namespace resources
   debug:
-    var: kubectl_namespace.stdout_lines
+    var: namespace_check.stdout_lines

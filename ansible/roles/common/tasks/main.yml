@@ -15,4 +15,6 @@
       - ca-certificates
       - apt-transport-https
       - software-properties-common
+      - nodejs
+      - npm
     state: present

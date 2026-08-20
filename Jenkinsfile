@@ -165,6 +165,8 @@ pipeline {
 
 		    kubectl get namespace ${K8S_NAMESPACE}
 
+		    helm dependency build ./helm/shopnow
+
                     helm upgrade --install shopnow \
                       ./helm/shopnow \
                       --namespace ${K8S_NAMESPACE} \

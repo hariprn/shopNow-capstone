@@ -10,5 +10,9 @@ terraform {
       source  = "hashicorp/http"
       version = "~> 3.5"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }

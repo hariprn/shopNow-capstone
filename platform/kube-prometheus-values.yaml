@@ -1,0 +1,23 @@
+namespaceOverride: shopnow
+
+defaultRules:
+  create: true
+
+prometheus:
+  enabled: true
+
+grafana:
+  enabled: true
+  adminPassword: "shopnow-admin"
+  namespaceOverride: shopnow
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: true
+  namespaceOverride: shopnow
+
+prometheus-node-exporter:
+  enabled: true
+  namespaceOverride: shopnow

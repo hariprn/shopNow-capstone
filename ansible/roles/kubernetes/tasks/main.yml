@@ -20,33 +20,14 @@
   register: kubeconfig_result
   changed_when: "'Updated context' in kubeconfig_result.stdout"
 
-- name: Check Kubernetes cluster connectivity
+- name: Check ShopNow namespace connectivity
   become: false
-  command: kubectl get nodes
+  command: kubectl get pods -n shopnow
   environment:
     HOME: /home/{{ ansible_user }}
-  register: kubectl_nodes
+  register: kubectl_namespace
   changed_when: false
 
-- name: Display Kubernetes nodes
+- name: Display ShopNow namespace resources
   debug:
-    var: kubectl_nodes.stdout_lines
-
-- name: Create ShopNow namespace
-  become: false
-  command: kubectl create namespace {{ shopnow_namespace }}
-  environment:
-    HOME: /home/{{ ansible_user }}
-  register: namespace_result
-  failed_when:
-    - namespace_result.rc != 0
-    - "'AlreadyExists' not in namespace_result.stderr"
-  changed_when: namespace_result.rc == 0
-
-- name: Verify ShopNow namespace
-  become: false
-  command: kubectl get namespace {{ shopnow_namespace }}
-  environment:
-    HOME: /home/{{ ansible_user }}
-  register: namespace_check
-  changed_when: false
+    var: kubectl_namespace.stdout_lines

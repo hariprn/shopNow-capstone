@@ -3,6 +3,10 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+data "http" "my_public_ip" {
+  url = "https://checkip.amazonaws.com"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -157,6 +161,17 @@ resource "aws_vpc_security_group_ingress_rule" "cluster_from_nodes" {
   ip_protocol = "-1"
 
   description = "Allow worker nodes to communicate with EKS control plane"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "cluster_from_jenkins" {
+  security_group_id            = aws_security_group.eks_cluster.id
+  referenced_security_group_id = aws_security_group.jenkins.id
+
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
+
+  description = "Allow Jenkins to access EKS Kubernetes API"
 }
 
 resource "aws_security_group" "eks_nodes" {
@@ -392,7 +407,7 @@ resource "aws_security_group" "jenkins" {
 resource "aws_vpc_security_group_ingress_rule" "jenkins_ssh" {
   security_group_id = aws_security_group.jenkins.id
 
-  cidr_ipv4   = "101.0.62.242/32"
+  cidr_ipv4   = "${chomp(data.http.my_public_ip.response_body)}/32"
   from_port   = 22
   to_port     = 22
   ip_protocol = "tcp"

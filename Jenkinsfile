@@ -163,7 +163,8 @@ pipeline {
                       --region ${AWS_REGION} \
                       --name ${EKS_CLUSTER_NAME}
 
-                    kubectl get namespace ${K8S_NAMESPACE}
+		    kubectl create namespace ${K8S_NAMESPACE} \
+		      --dry-run=client -o yaml | kubectl apply -f -
 
                     helm upgrade --install shopnow \
                       ./helm/shopnow \

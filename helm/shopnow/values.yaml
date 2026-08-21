@@ -90,6 +90,7 @@ mongodb:
 
   persistence:
     enabled: true
+    name: shopnow-mongodb-data
     size: 10Gi
 
 ingress:

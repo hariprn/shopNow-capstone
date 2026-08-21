@@ -232,6 +232,7 @@ pipeline {
                     echo "=== Backend Health ==="
                     kubectl run shopnow-health-check \
                       --rm \
+		      --attach \
                       --restart=Never \
                       --image=curlimages/curl:8.10.1 \
                       --command -- \

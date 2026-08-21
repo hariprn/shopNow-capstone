@@ -1,0 +1,18 @@
+# Screenshot manifest
+
+Place the captured screenshots in this directory using these names:
+
+01_Terraform_Infrastructure_Outputs.png
+02_EKS_Cluster_Nodes.png
+03_ShopNow_Application_Pods.png
+04_ShopNow_Deployments.png
+05_MongoDB_Persistent_Storage.png
+06_ShopNow_Kubernetes_Services.png
+07_AWS_ALB_Ingress.png
+08_Jenkins_Pipeline_Success.png
+09_Jenkins_Deployment_Console_Success.png
+10_Prometheus_Grafana_Platform.png
+11_Kubernetes_Resource_Metrics.png
+12_ShopNow_Application_ALB.png
+13_ECR_Container_Images.png
+14_AWS_Load_Balancer_Controller.png

@@ -120,6 +120,45 @@ shopNow/
 
 ------------------------------------------------------------------------
 
+### Architecture Diagram
+
+![ShopNow AWS EKS Architecture](docs/images/shopnow-architecture.png)
+
+## Infrastructure and Platform Evidence
+
+### Terraform Infrastructure
+![Terraform Infrastructure Outputs](docs/screenshots/01_Terraform_Infrastructure_Outputs.png)
+
+### EKS Cluster Nodes
+![EKS Cluster Nodes](docs/screenshots/02_EKS_Cluster_Nodes.png)
+
+### ShopNow Application Pods
+![ShopNow Application Pods](docs/screenshots/03_ShopNow_Application_Pods.png)
+
+### ShopNow Deployments
+![ShopNow Deployments](docs/screenshots/04_ShopNow_Deployments.png)
+
+### MongoDB Persistent Storage
+![MongoDB Persistent Storage](docs/screenshots/05_MongoDB_Persistent_Storage.png)
+
+### Kubernetes Services
+![ShopNow Kubernetes Services](docs/screenshots/06_ShopNow_Kubernetes_Services.png)
+
+### AWS ALB Ingress
+![AWS ALB Ingress](docs/screenshots/07_AWS_ALB_Ingress.png)
+
+### Jenkins Pipeline Success
+![Jenkins Pipeline Success](docs/screenshots/08_Jenkins_Pipeline_Success.png)
+
+### Jenkins Deployment Console
+![Jenkins Deployment Console](docs/screenshots/09_Jenkins_Deployment_Console_Success.png)
+
+### Prometheus and Grafana Platform
+![Prometheus and Grafana Platform](docs/screenshots/10_Prometheus_Grafana_Platform.png)
+
+### Kubernetes Resource Metrics
+![Kubernetes Resource Metrics](docs/screenshots/11_Kubernetes_Resource_Metrics.png)
+
 ## 5. Infrastructure Provisioning
 
 Terraform provisions the AWS foundation:
@@ -197,7 +236,7 @@ active
 LISTEN ... *:8080 ...
 ```
 
-![Jenkins Dashboard](docs/screenshots/09_Jenkins_Dashboard.png)
+![Jenkins Pipeline Success](docs/screenshots/08_Jenkins_Pipeline_Success.png)
 
 ------------------------------------------------------------------------
 
@@ -344,9 +383,19 @@ Example:
 The application was tested in the browser. Navigation, categories and
 Add to Cart functionality were verified.
 
-![ShopNow Application](docs/screenshots/10_ShopNow_Application.png)
+![ShopNow Application](docs/screenshots/12_ShopNow_Application_ALB.png)
 
-![ShopNow Shopping Cart](docs/screenshots/11_ShopNow_Shopping_Cart.png)
+![ShopNow Shopping Cart](docs/screenshots/16_ShopNow_Cart_Functionality.png)
+
+### ECR Container Images
+![ECR Container Images](docs/screenshots/13_ECR_Container_Images.png)
+
+### AWS Load Balancer Controller
+![AWS Load Balancer Controller](docs/screenshots/14_AWS_Load_Balancer_Controller.png)
+
+### ShopNow Functional Test
+![ShopNow Functional Test](docs/screenshots/15_ShopNow_Application_Functional_Test.png)
+
 
 ------------------------------------------------------------------------
 
@@ -367,7 +416,7 @@ shopnow-backend    cpu: 1%/70%    replicas: 2
 ```
 
 ![HPA Initial 2
-Replicas](docs/screenshots/17_HPA_Initial_2_Replicas.png)
+Replicas](docs/screenshots/17_Kubernetes_HPA_Baseline_2_Replicas.png)
 
 ### Scale-up
 
@@ -379,7 +428,7 @@ shopnow-backend    cpu: 62%/70%    replicas: 3
 ```
 
 ![HPA Scaled Up 3
-Replicas](docs/screenshots/18_HPA_Scaled_Up_3_Replicas.png)
+Replicas](docs/screenshots/18_Kubernetes_HPA_Scale_Up_3_Replicas.png)
 
 ### Scale-down
 
@@ -390,7 +439,7 @@ shopnow-backend    cpu: 1%/70%    replicas: 2
 ```
 
 ![HPA Scaled Down 2
-Replicas](docs/screenshots/19_HPA_Scaled_Down_2_Replicas.png)
+Replicas](docs/screenshots/19_Kubernetes_HPA_Scale_Down_2_Replicas.png)
 
 This demonstrates both scale-up and scale-down behavior.
 
@@ -704,23 +753,29 @@ docs/screenshots/
 
 Recommended evidence:
 
-``` text
-09_Jenkins_Dashboard.png
-10_ShopNow_Application.png
-11_ShopNow_Shopping_Cart.png
-17_HPA_Initial_2_Replicas.png
-18_HPA_Scaled_Up_3_Replicas.png
-19_HPA_Scaled_Down_2_Replicas.png
+```text
+01_Terraform_Infrastructure_Outputs.png
+02_EKS_Cluster_Nodes.png
+03_ShopNow_Application_Pods.png
+04_ShopNow_Deployments.png
+05_MongoDB_Persistent_Storage.png
+06_ShopNow_Kubernetes_Services.png
+07_AWS_ALB_Ingress.png
+08_Jenkins_Pipeline_Success.png
+09_Jenkins_Deployment_Console_Success.png
+10_Prometheus_Grafana_Platform.png
+11_Kubernetes_Resource_Metrics.png
+12_ShopNow_Application_ALB.png
+13_ECR_Container_Images.png
+14_AWS_Load_Balancer_Controller.png
+15_ShopNow_Application_Functional_Test.png
+16_ShopNow_Cart_Functionality.png
+17_Kubernetes_HPA_Baseline_2_Replicas.png
+18_Kubernetes_HPA_Scale_Up_3_Replicas.png
+19_Kubernetes_HPA_Scale_Down_2_Replicas.png
 21_Grafana_EKS_Nodes_Overview.png
 22_Grafana_ShopNow_Pod_Metrics.png
 23_Grafana_ShopNow_Workload_Metrics.png
 ```
 
 ------------------------------------------------------------------------
-
-## Author
-
-**Hari Prasad N**
-
-Cloud & Platform Engineering \| AWS \| Kubernetes \| DevOps \| DevSecOps
-\| Terraform \| Ansible \| CI/CD

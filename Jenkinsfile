@@ -231,6 +231,7 @@ pipeline {
 
                     echo "=== Backend Health ==="
                     kubectl run shopnow-health-check \
+		      --namespace ${K8S_NAMESPACE} \
                       --rm \
 		      --attach \
                       --restart=Never \

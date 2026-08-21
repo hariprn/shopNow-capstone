@@ -16,6 +16,22 @@ aws eks update-kubeconfig --region "${AWS_REGION}" --name "${EKS_CLUSTER_NAME}"
 kubectl get namespace "${K8S_NAMESPACE}" >/dev/null 2>&1 || \
   kubectl create namespace "${K8S_NAMESPACE}"
 
+echo "Creating ShopNow gp3 StorageClass..."
+
+kubectl apply -f - <<'EOF'
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: shopnow-gp3
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+parameters:
+  type: gp3
+  fsType: ext4
+EOF
+
 # AWS Load Balancer Controller
 helm repo add eks https://aws.github.io/eks-charts --force-update
 helm repo update eks

@@ -25,8 +25,8 @@ resource "aws_subnet" "public_a" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.project_name}-public-a"
-    "kubernetes.io/role/elb" = "1"
+    Name                                            = "${var.project_name}-public-a"
+    "kubernetes.io/role/elb"                        = "1"
     "kubernetes.io/cluster/${var.project_name}-eks" = "shared"
   }
 }
@@ -38,8 +38,8 @@ resource "aws_subnet" "public_b" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.project_name}-public-b"
-    "kubernetes.io/role/elb" = "1"
+    Name                                            = "${var.project_name}-public-b"
+    "kubernetes.io/role/elb"                        = "1"
     "kubernetes.io/cluster/${var.project_name}-eks" = "shared"
   }
 }
@@ -50,8 +50,8 @@ resource "aws_subnet" "private_a" {
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "${var.project_name}-private-a"
-    "kubernetes.io/role/internal-elb" = "1"
+    Name                                            = "${var.project_name}-private-a"
+    "kubernetes.io/role/internal-elb"               = "1"
     "kubernetes.io/cluster/${var.project_name}-eks" = "shared"
   }
 }
@@ -62,8 +62,8 @@ resource "aws_subnet" "private_b" {
   availability_zone = data.aws_availability_zones.available.names[1]
 
   tags = {
-    Name = "${var.project_name}-private-b"
-    "kubernetes.io/role/internal-elb" = "1"
+    Name                                            = "${var.project_name}-private-b"
+    "kubernetes.io/role/internal-elb"               = "1"
     "kubernetes.io/cluster/${var.project_name}-eks" = "shared"
   }
 }
@@ -262,6 +262,7 @@ resource "aws_iam_role_policy_attachment" "eks_ecr_pull_policy" {
 
 resource "aws_ecr_repository" "frontend" {
   name                 = "${var.project_name}-frontend"
+  force_delete         = true
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -279,6 +280,7 @@ resource "aws_ecr_repository" "frontend" {
 
 resource "aws_ecr_repository" "backend" {
   name                 = "${var.project_name}-backend"
+  force_delete         = true
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -296,6 +298,7 @@ resource "aws_ecr_repository" "backend" {
 
 resource "aws_ecr_repository" "admin" {
   name                 = "${var.project_name}-admin"
+  force_delete         = true
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -547,13 +550,13 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role" {
 
     condition {
       test     = "StringEquals"
-      variable = "${format("%s:sub", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))}"
+      variable = format("%s:sub", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))
       values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
     }
 
     condition {
       test     = "StringEquals"
-      variable = "${format("%s:aud", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))}"
+      variable = format("%s:aud", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))
       values   = ["sts.amazonaws.com"]
     }
   }
@@ -594,13 +597,13 @@ data "aws_iam_policy_document" "ebs_csi_assume_role" {
 
     condition {
       test     = "StringEquals"
-      variable = "${format("%s:sub", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))}"
+      variable = format("%s:sub", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))
       values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
     }
 
     condition {
       test     = "StringEquals"
-      variable = "${format("%s:aud", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))}"
+      variable = format("%s:aud", replace(aws_eks_cluster.main.identity[0].oidc[0].issuer, "https://", ""))
       values   = ["sts.amazonaws.com"]
     }
   }

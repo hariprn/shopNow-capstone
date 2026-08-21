@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-mongodb-data
-  spec:
+  name: {{ .Values.mongodb.persistence.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
   accessModes:
     - ReadWriteOnce
-
   storageClassName: shopnow-gp3
-
   resources:
     requests:
       storage: {{ .Values.mongodb.persistence.size }}
